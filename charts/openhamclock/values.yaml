@@ -103,6 +103,10 @@ persistence:
   # instead and this state is lost on every pod restart.
   enabled: true
   mountPath: /data
+  size: 1Gi
+  # -- Leave empty to use the cluster's default StorageClass.
+  storageClass: ""
+  accessMode: ReadWriteOnce
 
 nodeSelector: {}
 tolerations: []
