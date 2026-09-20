@@ -132,3 +132,18 @@ udpServices:
     enabled: false
     port: 12060
     nodePort: null
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  host: openhamclock.example.com
+  path: /
+  pathType: Prefix
+  # -- TLS configuration, same shape as the native Ingress spec.
+  # Example:
+  # tls:
+  #   - secretName: openhamclock-tls
+  #     hosts:
+  #       - openhamclock.example.com
+  tls: []
