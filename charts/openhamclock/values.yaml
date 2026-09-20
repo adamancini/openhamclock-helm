@@ -57,3 +57,53 @@ secretEnv: {}
 # -- Name of a pre-existing Secret to use instead of the one this chart
 # would otherwise render from `secretEnv`. Takes precedence when set.
 existingSecret: ""
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    memory: 2Gi
+
+# -- Pod-level securityContext. Not forcing runAsNonRoot: the upstream
+# Dockerfile has no USER directive (runs as root by default) and this
+# hasn't been verified against a non-root UID, so it's left off by
+# default and available for users who've confirmed it works for them.
+podSecurityContext: {}
+
+# -- Container-level securityContext.
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 15
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+persistence:
+  # -- Persist /data (stats, settings sync, push-subscription state)
+  # across pod restarts via a PVC. When false, an emptyDir is used
+  # instead and this state is lost on every pod restart.
+  enabled: true
+  mountPath: /data
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
