@@ -19,3 +19,41 @@ serviceAccount:
   create: true
   name: ""
   annotations: {}
+
+# -- Non-secret environment variables, rendered into a ConfigMap and
+# wired into the Deployment via envFrom. The upstream app documents 70+
+# of these in its .env.example and adds more as features ship, so this
+# is a generic map rather than one values field per variable — add any
+# key from .env.example you need that isn't already listed here.
+config:
+  env:
+    CALLSIGN: "N0CALL"
+    LOCATOR: "FN31"
+    PORT: "3000"
+    HOST: "0.0.0.0"
+    TIME_FORMAT: "12"
+    THEME: "dark"
+    LAYOUT: "modern"
+    DISTUNITS: "imperial"
+    TEMPUNITS: "imperial"
+    PRESSUNITS: "imperial"
+    SHOW_POTA: "true"
+    SHOW_SATELLITES: "true"
+    SHOW_DX_PATHS: "true"
+    SHOW_DX_WEATHER: "true"
+    WSJTX_ENABLED: "true"
+    WSJTX_UDP_PORT: "2237"
+    N1MM_UDP_ENABLED: "false"
+    N1MM_UDP_PORT: "12060"
+    SPOT_RETENTION_MINUTES: "30"
+
+# -- Secret environment variables (API keys, credentials), rendered into
+# a Secret and wired into the Deployment via envFrom. Empty by default —
+# add keys like OPENWEATHER_API_KEY, API_WRITE_KEY, WSJTX_RELAY_KEY here,
+# or set `existingSecret` instead to reference a Secret you manage
+# yourself (e.g. via External Secrets / SealedSecrets).
+secretEnv: {}
+
+# -- Name of a pre-existing Secret to use instead of the one this chart
+# would otherwise render from `secretEnv`. Takes precedence when set.
+existingSecret: ""
