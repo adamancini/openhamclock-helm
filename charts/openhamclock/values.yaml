@@ -65,6 +65,13 @@ resources:
   limits:
     memory: 2Gi
 
+# -- Deployment update strategy. Recreate by default because the default
+# PVC is ReadWriteOnce: a RollingUpdate starts the new pod before the old
+# one releases the volume, which deadlocks when they land on different
+# nodes. Safe to set to RollingUpdate with RWX storage or persistence off.
+updateStrategy:
+  type: Recreate
+
 # -- Pod-level securityContext. Not forcing runAsNonRoot: the upstream
 # Dockerfile has no USER directive (runs as root by default) and this
 # hasn't been verified against a non-root UID, so it's left off by

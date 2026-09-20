@@ -22,12 +22,12 @@ Web UI (port-forward):
   Then open http://localhost:3000
 {{- end }}
 
-{{- if .Values.udpServices.enabled }}
+{{- if and .Values.udpServices.enabled (or .Values.udpServices.wsjtx.enabled .Values.udpServices.n1mm.enabled) }}
 
 WSJT-X / N1MM UDP:
   Service {{ include "openhamclock.fullname" . }}-udp is type {{ .Values.udpServices.type }}.
   Point WSJT-X/N1MM at that Service's address on the port(s) you enabled
-  ({{- if .Values.udpServices.wsjtx.enabled }} wsjtx-udp={{ .Values.udpServices.wsjtx.port }}{{- end }}{{- if .Values.udpServices.n1mm.enabled }} n1mm-udp={{ .Values.udpServices.n1mm.port }}{{- end }}).
+  ({{ trim (printf "%s%s" (ternary (printf " wsjtx-udp=%v" .Values.udpServices.wsjtx.port) "" .Values.udpServices.wsjtx.enabled) (ternary (printf " n1mm-udp=%v" .Values.udpServices.n1mm.port) "" .Values.udpServices.n1mm.enabled)) }}).
 {{- else }}
 
 WSJT-X / N1MM UDP integration is disabled (udpServices.enabled=false).

@@ -32,6 +32,7 @@ helm install my-openhamclock ./charts/openhamclock \
 | `persistence.enabled` | `true` | Persist `/data` via a PVC (else `emptyDir`). |
 | `persistence.size` | `1Gi` | PVC size. |
 | `udpServices.enabled` | `false` | Expose the WSJT-X/N1MM UDP listeners outside the cluster. Requires also setting `udpServices.type` to `NodePort` or `LoadBalancer`. |
+| `udpServices.type` | `NodePort` | Service type for the UDP listeners (`NodePort` or `LoadBalancer`). |
 | `udpServices.wsjtx.enabled` | `true` | Include the WSJT-X UDP port (2237) when `udpServices.enabled=true`. |
 | `udpServices.n1mm.enabled` | `false` | Include the N1MM UDP port (12060) when `udpServices.enabled=true`. |
 

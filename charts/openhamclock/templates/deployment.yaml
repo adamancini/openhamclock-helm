@@ -6,11 +6,20 @@ metadata:
     {{- include "openhamclock.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  {{- with .Values.updateStrategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "openhamclock.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if not .Values.existingSecret }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         {{- include "openhamclock.selectorLabels" . | nindent 8 }}
     spec:
@@ -32,10 +41,10 @@ spec:
               containerPort: 3000
               protocol: TCP
             - name: wsjtx-udp
-              containerPort: {{ .Values.config.env.WSJTX_UDP_PORT | default "2237" }}
+              containerPort: {{ (.Values.config.env).WSJTX_UDP_PORT | default "2237" }}
               protocol: UDP
             - name: n1mm-udp
-              containerPort: {{ .Values.config.env.N1MM_UDP_PORT | default "12060" }}
+              containerPort: {{ (.Values.config.env).N1MM_UDP_PORT | default "12060" }}
               protocol: UDP
           envFrom:
             - configMapRef:
