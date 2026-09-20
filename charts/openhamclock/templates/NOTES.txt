@@ -1,0 +1,36 @@
+OpenHamClock has been deployed as {{ include "openhamclock.fullname" . }}.
+
+{{- if .Values.ingress.enabled }}
+
+Web UI:
+  http{{ if .Values.ingress.tls }}s{{ end }}://{{ .Values.ingress.host }}{{ .Values.ingress.path }}
+{{- else if eq .Values.service.type "LoadBalancer" }}
+
+Web UI:
+  Run the following to get the external IP, it may take a few minutes:
+    kubectl get svc -w {{ include "openhamclock.fullname" . }} -n {{ .Release.Namespace }}
+{{- else if eq .Values.service.type "NodePort" }}
+
+Web UI:
+  export NODE_PORT=$(kubectl get svc {{ include "openhamclock.fullname" . }} -n {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}")
+  export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "http://$NODE_IP:$NODE_PORT"
+{{- else }}
+
+Web UI (port-forward):
+  kubectl port-forward svc/{{ include "openhamclock.fullname" . }} -n {{ .Release.Namespace }} 3000:{{ .Values.service.port }}
+  Then open http://localhost:3000
+{{- end }}
+
+{{- if .Values.udpServices.enabled }}
+
+WSJT-X / N1MM UDP:
+  Service {{ include "openhamclock.fullname" . }}-udp is type {{ .Values.udpServices.type }}.
+  Point WSJT-X/N1MM at that Service's address on the port(s) you enabled
+  ({{- if .Values.udpServices.wsjtx.enabled }} wsjtx-udp={{ .Values.udpServices.wsjtx.port }}{{- end }}{{- if .Values.udpServices.n1mm.enabled }} n1mm-udp={{ .Values.udpServices.n1mm.port }}{{- end }}).
+{{- else }}
+
+WSJT-X / N1MM UDP integration is disabled (udpServices.enabled=false).
+Set udpServices.enabled=true and udpServices.type to NodePort or
+LoadBalancer to reach it from outside the cluster.
+{{- end }}
