@@ -107,3 +107,7 @@ persistence:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+service:
+  type: ClusterIP
+  port: 3000
