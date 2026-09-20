@@ -111,3 +111,20 @@ affinity: {}
 service:
   type: ClusterIP
   port: 3000
+
+udpServices:
+  # -- Exposes the WSJT-X/N1MM UDP listeners outside the cluster. A plain
+  # ClusterIP can't be reached by an operator's WSJT-X/N1MM software, so
+  # enabling this also requires picking a `type` (NodePort or
+  # LoadBalancer) — left off by default so nobody gets a NodePort
+  # reserved or a cloud LoadBalancer provisioned without asking for it.
+  enabled: false
+  type: NodePort
+  wsjtx:
+    enabled: true
+    port: 2237
+    nodePort: null
+  n1mm:
+    enabled: false
+    port: 12060
+    nodePort: null

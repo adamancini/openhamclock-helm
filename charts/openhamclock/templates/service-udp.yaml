@@ -1,0 +1,31 @@
+{{- if and .Values.udpServices.enabled (or .Values.udpServices.wsjtx.enabled .Values.udpServices.n1mm.enabled) }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "openhamclock.fullname" . }}-udp
+  labels:
+    {{- include "openhamclock.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.udpServices.type }}
+  ports:
+    {{- if .Values.udpServices.wsjtx.enabled }}
+    - port: {{ .Values.udpServices.wsjtx.port }}
+      targetPort: wsjtx-udp
+      protocol: UDP
+      name: wsjtx-udp
+      {{- if .Values.udpServices.wsjtx.nodePort }}
+      nodePort: {{ .Values.udpServices.wsjtx.nodePort }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.udpServices.n1mm.enabled }}
+    - port: {{ .Values.udpServices.n1mm.port }}
+      targetPort: n1mm-udp
+      protocol: UDP
+      name: n1mm-udp
+      {{- if .Values.udpServices.n1mm.nodePort }}
+      nodePort: {{ .Values.udpServices.n1mm.nodePort }}
+      {{- end }}
+    {{- end }}
+  selector:
+    {{- include "openhamclock.selectorLabels" . | nindent 4 }}
+{{- end }}
