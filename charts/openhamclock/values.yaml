@@ -1,0 +1,21 @@
+# -- Number of Deployment replicas. OpenHamClock keeps no state that
+# coordinates across replicas (settings/stats live on the PVC), so this
+# is left at 1 by default rather than adding HPA/PDB machinery.
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: ghcr.io/accius/openhamclock
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  # -- Whether to create a ServiceAccount for the pod. The app never talks
+  # to the Kubernetes API, so no RBAC rules are attached either way.
+  create: true
+  name: ""
+  annotations: {}

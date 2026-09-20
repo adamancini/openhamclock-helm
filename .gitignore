@@ -1,1 +1,2 @@
-.worktrees/
+*.tgz
+.DS_Store
