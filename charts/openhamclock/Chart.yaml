@@ -2,8 +2,8 @@ apiVersion: v2
 name: openhamclock
 description: A Helm chart for deploying OpenHamClock, a real-time amateur radio dashboard
 type: application
-version: 0.1.0
-appVersion: "26.7.4"
+version: 0.2.0
+appVersion: "26.10.5"
 home: https://openhamclock.com
 sources:
   - https://github.com/accius/openhamclock
